@@ -17,12 +17,12 @@ namespace IncomeManager.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("IncomeManager.Models.Expenses", b =>
+            modelBuilder.Entity("IncomeManager.Models.Expense", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,12 +36,87 @@ namespace IncomeManager.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("InvestmentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("InvestmentId");
+
                     b.ToTable("Expenses");
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.Income", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("InvestmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvestmentId");
+
+                    b.ToTable("Income");
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.Investment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Investments");
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.InvestmentSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InvestmentSources");
                 });
 
             modelBuilder.Entity("IncomeManager.Models.Salary", b =>
@@ -58,9 +133,83 @@ namespace IncomeManager.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Salary");
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("Ballance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("InvestmentInvestmentSource", b =>
+                {
+                    b.Property<int>("InvestmentsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SourceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("InvestmentsId", "SourceId");
+
+                    b.HasIndex("SourceId");
+
+                    b.ToTable("InvestmentInvestmentSource");
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.Expense", b =>
+                {
+                    b.HasOne("IncomeManager.Models.Investment", null)
+                        .WithMany("Expenses")
+                        .HasForeignKey("InvestmentId");
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.Income", b =>
+                {
+                    b.HasOne("IncomeManager.Models.Investment", null)
+                        .WithMany("Income")
+                        .HasForeignKey("InvestmentId");
+                });
+
+            modelBuilder.Entity("InvestmentInvestmentSource", b =>
+                {
+                    b.HasOne("IncomeManager.Models.Investment", null)
+                        .WithMany()
+                        .HasForeignKey("InvestmentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("IncomeManager.Models.InvestmentSource", null)
+                        .WithMany()
+                        .HasForeignKey("SourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.Investment", b =>
+                {
+                    b.Navigation("Expenses");
+
+                    b.Navigation("Income");
                 });
 #pragma warning restore 612, 618
         }

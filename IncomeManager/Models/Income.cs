@@ -2,10 +2,11 @@
 
 namespace IncomeManager.Models
 {
-    public class Salary
+    public class Income
     {
-        public int Id { get; set; }
-        public decimal Amount { get; set; }
+        public int Id { get; set; } 
+        public string? Type { get; set; }
+        public decimal Amount { get; set; } 
         public DateTime DateTime { get; set; }
         [ForeignKey("Users")]
         public int UserId { get; set; }

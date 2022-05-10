@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IncomeManager.Data;
 using IncomeManager.Models;
+using IncomeManager.Services;
+using System.Data.Entity.Core;
 
 namespace IncomeManager.Controllers
 {
@@ -10,53 +12,49 @@ namespace IncomeManager.Controllers
     [ApiController]
     public class ExpensesController : ControllerBase
     {
-        private readonly IncomeManagerContext _context;
+        private readonly IExpensesServices _expensesServices;
 
-        public ExpensesController(IncomeManagerContext context)
+        public ExpensesController(IExpensesServices expensesServices)
         {
-            _context = context;
+            _expensesServices = expensesServices;
         }
 
         // GET: api/Expenses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Expenses>>> GetExpence()
+        public async Task<ActionResult<IEnumerable<Expense>>> GetExpense()
         {
-            return await _context.Expenses.ToListAsync();
+            return new ActionResult<IEnumerable<Expense>>(await _expensesServices.GetExpenses().ConfigureAwait(false));
         }
 
-        // GET: api/Expenses/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Expenses>> GetExpence(int id)
+        public async Task<ActionResult<Expense>> GetExpense(int id)
         {
-            var expence = await _context.Expenses.FindAsync(id);
-
-            if (expence == null)
+            try
+            {
+                return  await _expensesServices.GetExpense(id).ConfigureAwait(false);
+            }
+            catch (ObjectNotFoundException)
             {
                 return NotFound();
-            }
-
-            return expence;
+            }      
         }
 
         // PUT: api/Expenses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutExpence(int id, Expenses expence)
+        public async Task<ActionResult<Expense>> PutExpense(int id, Expense expence)
         {
             if (id != expence.Id)
             {
-                return BadRequest();
+                BadRequest();
             }
-
-            _context.Entry(expence).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                return await _expensesServices.PutExpense(id, expence).ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ExpenceExists(id))
+                if (expence == null)
                 {
                     return NotFound();
                 }
@@ -65,40 +63,30 @@ namespace IncomeManager.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Expenses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Expenses>> PostExpence(Expenses expence)
+        public async Task<ActionResult> PostExpense(Expense expense)
         {
-            _context.Expenses.Add(expence);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetExpence", new { id = expence.Id }, expence);
+            await _expensesServices.PostExpense(expense);
+            return CreatedAtAction("GetExpense", new { id = expense.Id }, expense);
         }
 
         // DELETE: api/Expenses/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteExpence(int id)
+        public async Task<ActionResult> DeleteExpense(int id)
         {
-            var expence = await _context.Expenses.FindAsync(id);
-            if (expence == null)
+            try
+            {
+                await _expensesServices.DeleteExpense(id).ConfigureAwait(false);
+                return NoContent();
+            }
+            catch (ObjectNotFoundException)
             {
                 return NotFound();
-            }
-
-            _context.Expenses.Remove(expence);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ExpenceExists(int id)
-        {
-            return _context.Expenses.Any(e => e.Id == id);
+            }   
         }
     }
 }

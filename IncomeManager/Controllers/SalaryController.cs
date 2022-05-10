@@ -1,8 +1,9 @@
 ﻿#nullable disable
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using IncomeManager.Data;
+using IncomeManager.Services;
 using IncomeManager.Models;
+using System.Data.Entity.Core;
 
 namespace IncomeManager.Controllers
 {
@@ -10,53 +11,50 @@ namespace IncomeManager.Controllers
     [ApiController]
     public class SalaryController : ControllerBase
     {
-        private readonly IncomeManagerContext _context;
+        private readonly ISalaryServices _salaryServices;
 
-        public SalaryController(IncomeManagerContext context)
+        public SalaryController(ISalaryServices salaryServices)
         {
-            _context = context;
+            _salaryServices = salaryServices;
         }
 
         // GET: api/Salary
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Salary>>> GetSalary()
         {
-            return await _context.Salary.ToListAsync();
+            return new ActionResult<IEnumerable<Salary>>(await _salaryServices.GetSalary().ConfigureAwait(false));
         }
 
         // GET: api/Salary/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Salary>> GetSalary(int id)
         {
-            var salary = await _context.Salary.FindAsync(id);
-
-            if (salary == null)
+            try
+            {
+                return await _salaryServices.GetSalary(id).ConfigureAwait(false);
+            }
+            catch (ObjectNotFoundException)
             {
                 return NotFound();
             }
-
-            return salary;
         }
 
         // PUT: api/Salary/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSalary(int id, Salary salary)
+        public async Task<ActionResult<Salary>> PutSalary(int id, Salary salary)
         {
             if (id != salary.Id)
             {
-                return BadRequest();
+               return BadRequest();
             }
-
-            _context.Entry(salary).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+               return await _salaryServices.PutSalary(id, salary).ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SalaryExists(id))
+                if (salary == null)
                 {
                     return NotFound();
                 }
@@ -65,40 +63,30 @@ namespace IncomeManager.Controllers
                     throw;
                 }
             }
-
-            return NoContent();
         }
 
         // POST: api/Salary
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Salary>> PostSalary(Salary salary)
+        public async Task<ActionResult> PostSalary(Salary salary)
         {
-            _context.Salary.Add(salary);
-            await _context.SaveChangesAsync();
-
+            await _salaryServices.PostSalary(salary).ConfigureAwait(false);
             return CreatedAtAction("GetSalary", new { id = salary.Id }, salary);
         }
 
         // DELETE: api/Salary/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSalary(int id)
+        public async Task<ActionResult> DeleteSalary(int id)
         {
-            var salary = await _context.Salary.FindAsync(id);
-            if (salary == null)
+            try
+            {
+                await _salaryServices.DeleteSalary(id).ConfigureAwait(false);
+                return NoContent();
+            }
+            catch (ObjectNotFoundException)
             {
                 return NotFound();
-            }
-
-            _context.Salary.Remove(salary);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool SalaryExists(int id)
-        {
-            return _context.Salary.Any(e => e.Id == id);
+            }        
         }
     }
 }
