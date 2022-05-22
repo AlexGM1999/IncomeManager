@@ -10,6 +10,7 @@ using IncomeManager.Data;
 using IncomeManager.Models;
 using IncomeManager.Services;
 using System.Data.Entity.Core;
+using IncomeManager.DTOs;
 
 namespace IncomeManager.Controllers
 {
@@ -74,10 +75,10 @@ namespace IncomeManager.Controllers
         // POST: api/Investment
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult> PostInvestment(Investment investment)
+        public async Task/*Task<ActionResult>*/ PostInvestment(CreateInvestment investment)
         {
             await _investmentServices.PostInvestment(investment).ConfigureAwait(false);
-            return CreatedAtAction("GetInvestment", new { id = investment.Id }, investment);
+            //return CreatedAtAction("GetInvestment", new { id = investment.Id }, investment);
         }
 
         // DELETE: api/Investment/5

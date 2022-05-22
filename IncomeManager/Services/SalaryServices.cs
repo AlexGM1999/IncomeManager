@@ -33,6 +33,10 @@ namespace IncomeManager.Services
 
         public async Task<Salary> PutSalary(int id, Salary salary)
         {
+            var s = _context.Salary.Find(id);
+            var user = await _context.Users.FindAsync(salary.UserId);
+            user.Ballance -= s.Amount;
+            user.Ballance += salary.Amount;
 
             _context.Entry(salary).State = EntityState.Modified;
 
@@ -43,6 +47,9 @@ namespace IncomeManager.Services
 
         public async Task<Salary> PostSalary(Salary salary)
         {
+            var user = await _context.Users.FindAsync(salary.UserId);
+            user.Ballance += salary.Amount;
+
             _context.Salary.Add(salary);
             await _context.SaveChangesAsync();
 

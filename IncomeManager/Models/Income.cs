@@ -8,7 +8,7 @@ namespace IncomeManager.Models
         public string? Type { get; set; }
         public decimal Amount { get; set; } 
         public DateTime DateTime { get; set; }
-        [ForeignKey("Users")]
         public int UserId { get; set; }
+        public int? InvestmentId { get; set; }
     }
 }

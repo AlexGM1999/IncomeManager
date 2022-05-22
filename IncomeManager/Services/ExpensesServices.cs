@@ -31,21 +31,28 @@ namespace IncomeManager.Services
             return expence;
         }
 
-        public async Task<Expense> PutExpense(int id, Expense expence)
+        public async Task<Expense> PutExpense(int id, Expense expense)
         {
-            _context.Entry(expence).State = EntityState.Modified;      
+           var e = _context.Expenses.Find(id);
+            var user = await _context.Users.FindAsync(expense.UserId);
+            user.Ballance += e.Amount;
+            user.Ballance -= expense.Amount;
 
+            _context.Entry(expense).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
-            return expence;
+            return expense;
         }
 
-        public async Task<Expense> PostExpense(Expense expence)
+        public async Task<Expense> PostExpense(Expense expense)
         {
-            _context.Expenses.Add(expence);
+            var user = await _context.Users.FindAsync(expense.UserId);
+            user.Ballance -= expense.Amount; 
+
+            _context.Expenses.Add(expense);
             await _context.SaveChangesAsync();
 
-            return expence;
+            return expense;
         }
 
         public async Task DeleteExpense(int id)

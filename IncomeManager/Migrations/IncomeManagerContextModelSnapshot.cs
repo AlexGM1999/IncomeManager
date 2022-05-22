@@ -49,6 +49,8 @@ namespace IncomeManager.Migrations
 
                     b.HasIndex("InvestmentId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Expenses");
                 });
 
@@ -79,6 +81,8 @@ namespace IncomeManager.Migrations
 
                     b.HasIndex("InvestmentId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Income");
                 });
 
@@ -101,18 +105,22 @@ namespace IncomeManager.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Investments");
                 });
 
             modelBuilder.Entity("IncomeManager.Models.InvestmentSource", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -137,6 +145,8 @@ namespace IncomeManager.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Salary");
                 });
@@ -179,15 +189,47 @@ namespace IncomeManager.Migrations
             modelBuilder.Entity("IncomeManager.Models.Expense", b =>
                 {
                     b.HasOne("IncomeManager.Models.Investment", null)
-                        .WithMany("Expenses")
-                        .HasForeignKey("InvestmentId");
+                        .WithMany()
+                        .HasForeignKey("InvestmentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("IncomeManager.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("IncomeManager.Models.Income", b =>
                 {
                     b.HasOne("IncomeManager.Models.Investment", null)
-                        .WithMany("Income")
-                        .HasForeignKey("InvestmentId");
+                        .WithMany()
+                        .HasForeignKey("InvestmentId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("IncomeManager.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.Investment", b =>
+                {
+                    b.HasOne("IncomeManager.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("IncomeManager.Models.Salary", b =>
+                {
+                    b.HasOne("IncomeManager.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("InvestmentInvestmentSource", b =>
@@ -203,13 +245,6 @@ namespace IncomeManager.Migrations
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("IncomeManager.Models.Investment", b =>
-                {
-                    b.Navigation("Expenses");
-
-                    b.Navigation("Income");
                 });
 #pragma warning restore 612, 618
         }

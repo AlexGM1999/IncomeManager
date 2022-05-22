@@ -40,6 +40,9 @@ namespace IncomeManager.Services
 
         public async Task<Income> PostIncome(Income income)
         {
+            var user = await _context.Users.FindAsync(income.UserId);
+            user.Ballance += income.Amount;
+
             _context.Income.Add(income);
             await _context.SaveChangesAsync();
 
