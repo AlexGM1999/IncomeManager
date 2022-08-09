@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IncomeManager", "IncomeManager\IncomeManager.csproj", "{C90F6F2D-3B85-43AC-974A-6AB18F96857E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncomeManager", "IncomeManager\IncomeManager.csproj", "{C90F6F2D-3B85-43AC-974A-6AB18F96857E}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "incomemanagerfe", "IncomeManagerFE\incomemanagerfe.esproj", "{1A584BE9-9155-429A-B708-DEB1E5BB694D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,12 @@ Global
 		{C90F6F2D-3B85-43AC-974A-6AB18F96857E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C90F6F2D-3B85-43AC-974A-6AB18F96857E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C90F6F2D-3B85-43AC-974A-6AB18F96857E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A584BE9-9155-429A-B708-DEB1E5BB694D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A584BE9-9155-429A-B708-DEB1E5BB694D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A584BE9-9155-429A-B708-DEB1E5BB694D}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1A584BE9-9155-429A-B708-DEB1E5BB694D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A584BE9-9155-429A-B708-DEB1E5BB694D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A584BE9-9155-429A-B708-DEB1E5BB694D}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ namespace IncomeManager.Services
     {
         public Task<IEnumerable<Income>> GetIncome();
         public Task<Income> GetIncome(int id);
-        public Task<Income> PutIncome(int id, Income income);
+        public Task<Income> PutIncome(Income income);
         public Task<Income> PostIncome(Income income);
         public Task DeleteIncome(int id);
     }

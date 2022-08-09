@@ -32,9 +32,10 @@ namespace IncomeManager.Services
             return investmentSource;
         }
 
-        public async Task<InvestmentSource> PutInvestmentSource(int id, InvestmentSource investmentSource)
+        public async Task<InvestmentSource> PutInvestmentSource( InvestmentSource investmentSource)
         {
-            _context.Entry(investmentSource).State = EntityState.Modified;
+            var source = await _context.InvestmentSources.FindAsync(investmentSource.Id).ConfigureAwait(false);
+            //todo
 
             await _context.SaveChangesAsync(); 
       

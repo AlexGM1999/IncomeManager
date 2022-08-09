@@ -49,15 +49,11 @@ namespace IncomeManager.Controllers
         // PUT: api/Investment/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<Investment>> PutInvestment(int id, Investment investment)
+        public async Task<ActionResult<Investment>> PutInvestment(Investment investment)
         {
-            if (id != investment.Id)
-            {
-                return BadRequest();
-            }
             try
             {
-                return await _investmentServices.PutInvestment(id, investment).ConfigureAwait(false);
+                return await _investmentServices.PutInvestment(investment).ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {

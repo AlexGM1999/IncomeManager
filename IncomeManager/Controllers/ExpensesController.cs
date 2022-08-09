@@ -42,15 +42,11 @@ namespace IncomeManager.Controllers
         // PUT: api/Expenses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<Expense>> PutExpense(int id, Expense expence)
+        public async Task<ActionResult<Expense>> PutExpense(Expense expence)
         {
-            if (id != expence.Id)
-            {
-                BadRequest();
-            }
             try
             {
-                return await _expensesServices.PutExpense(id, expence).ConfigureAwait(false);
+                return await _expensesServices.PutExpense(expence).ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {

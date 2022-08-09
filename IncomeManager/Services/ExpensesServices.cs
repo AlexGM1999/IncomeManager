@@ -31,23 +31,27 @@ namespace IncomeManager.Services
             return expence;
         }
 
-        public async Task<Expense> PutExpense(int id, Expense expense)
+        public async Task<Expense> PutExpense(Expense expense)
         {
-           var e = _context.Expenses.Find(id);
-            var user = await _context.Users.FindAsync(expense.UserId);
-            user.Ballance += e.Amount;
-            user.Ballance -= expense.Amount;
+            var e = await _context.Expenses.FindAsync(expense.Id).ConfigureAwait(false);
+            var user = await _context.Users.FindAsync(expense.UserId).ConfigureAwait(false);
+            user.PersonalBalance += e.Amount;
+            user.PersonalBalance -= expense.Amount;
 
-            _context.Entry(expense).State = EntityState.Modified;
+            e.InvestmentId = expense.InvestmentId;
+            e.UserId = expense.UserId;
+            e.Amount = expense.Amount;
+            e.Type = expense.Type;
+
             await _context.SaveChangesAsync();
 
             return expense;
         }
 
         public async Task<Expense> PostExpense(Expense expense)
-        {
+        {        
             var user = await _context.Users.FindAsync(expense.UserId);
-            user.Ballance -= expense.Amount; 
+            user.PersonalBalance -= expense.Amount;
 
             _context.Expenses.Add(expense);
             await _context.SaveChangesAsync();

@@ -7,7 +7,7 @@ namespace IncomeManager.Services
     {
         public Task<IEnumerable<Investment>> GetInvestments();
         public Task<Investment> GetInvestment(int id);
-        public Task<Investment> PutInvestment(int id, Investment investment);
+        public Task<Investment> PutInvestment(Investment investment);
         public Task<Investment> PostInvestment(CreateInvestment investment);
         public Task DeleteInvestment(int id);
     }

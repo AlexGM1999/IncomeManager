@@ -24,29 +24,30 @@ namespace IncomeManager.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
             modelBuilder.Entity<Expense>()
                 .HasOne<User>()
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Income>()
                .HasOne<User>()
                .WithMany()
                .HasForeignKey(p => p.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Investment>()
                .HasOne<User>()
                .WithMany()
                .HasForeignKey(p => p.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Salary>()
                .HasOne<User>()
                .WithMany()
                .HasForeignKey(p => p.UserId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.NoAction);
 
             //Investment
             modelBuilder.Entity<Expense>()
@@ -62,14 +63,9 @@ namespace IncomeManager.Data
               .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Investment>()
-                .HasMany(i => i.Source)
-                .WithMany(i => i.Investments);
-
-          /*  modelBuilder.Entity<Investment>()
-                .HasMany(c => c.Source).WithMany(i => i.Investments)
-                .Map(t => t.MapLeftKey("Id")
-                 .MapRightKey("Id")
-                 .ToTable("InvestmentInvestmentSource"));*/
+                .HasOne<InvestmentSource>()
+                .WithMany(i => i.Investments)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

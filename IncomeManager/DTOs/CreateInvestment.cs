@@ -4,20 +4,20 @@ namespace IncomeManager.DTOs
 {
     public class CreateInvestment
     {
-        public CreateInvestment(decimal balance, List<int> sources, int userId, DateTime date)
+        public CreateInvestment(decimal balance, InvestmentSource source, int userId, DateTime dateTime)
         {
             Balance = balance;
-            Sources = sources;
+            Source = source;
             UserId = userId;
-            Date = date;
+            DateTime = dateTime;
         }
 
         public decimal Balance { get; set; }
 
-        public List<int> Sources { get; set; }
+        public InvestmentSource Source { get; set; }
 
         public int UserId { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.Now;
     }
 }

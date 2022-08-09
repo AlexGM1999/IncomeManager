@@ -42,15 +42,11 @@ namespace IncomeManager.Controllers
         // PUT: api/Salary/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<Salary>> PutSalary(int id, Salary salary)
+        public async Task<ActionResult<Salary>> PutSalary(Salary salary)
         {
-            if (id != salary.Id)
-            {
-               return BadRequest();
-            }
             try
             {
-               return await _salaryServices.PutSalary(id, salary).ConfigureAwait(false);
+               return await _salaryServices.PutSalary(salary).ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {

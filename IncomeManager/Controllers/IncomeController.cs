@@ -10,6 +10,9 @@ using IncomeManager.Data;
 using IncomeManager.Models;
 using IncomeManager.Services;
 using System.Data.Entity.Core;
+using Quartz.Impl;
+using Quartz;
+using System.Collections.Specialized;
 
 namespace IncomeManager.Controllers
 {
@@ -48,15 +51,11 @@ namespace IncomeManager.Controllers
         // PUT: api/Income/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<ActionResult<Income>> PutIncome(int id, Income income)
+        public async Task<ActionResult<Income>> PutIncome(Income income)
         {
-            if (id != income.Id)
-            {
-                BadRequest();
-            }
             try
             {
-                return await _incomeServices.PutIncome(id, income).ConfigureAwait(false);
+                return await _incomeServices.PutIncome(income).ConfigureAwait(false);
             }
             catch (DbUpdateConcurrencyException)
             {

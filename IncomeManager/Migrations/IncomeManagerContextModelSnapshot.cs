@@ -17,7 +17,7 @@ namespace IncomeManager.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -33,11 +33,17 @@ namespace IncomeManager.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("Date")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("InvestmentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Scheduled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
@@ -65,8 +71,9 @@ namespace IncomeManager.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("InvestmentId")
                         .HasColumnType("int");
@@ -100,10 +107,20 @@ namespace IncomeManager.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("InvestmentSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SourceId")
+                        .HasColumnType("int");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InvestmentSourceId");
+
+                    b.HasIndex("SourceId");
 
                     b.HasIndex("UserId");
 
@@ -138,8 +155,9 @@ namespace IncomeManager.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -159,31 +177,25 @@ namespace IncomeManager.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal>("Ballance")
+                    b.Property<decimal>("BankBalance")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("OtherBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PersonalBalance")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("SponsorsBalance")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("InvestmentInvestmentSource", b =>
-                {
-                    b.Property<int>("InvestmentsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SourceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("InvestmentsId", "SourceId");
-
-                    b.HasIndex("SourceId");
-
-                    b.ToTable("InvestmentInvestmentSource");
                 });
 
             modelBuilder.Entity("IncomeManager.Models.Expense", b =>
@@ -196,7 +208,7 @@ namespace IncomeManager.Migrations
                     b.HasOne("IncomeManager.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -210,17 +222,28 @@ namespace IncomeManager.Migrations
                     b.HasOne("IncomeManager.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("IncomeManager.Models.Investment", b =>
                 {
+                    b.HasOne("IncomeManager.Models.InvestmentSource", null)
+                        .WithMany("Investments")
+                        .HasForeignKey("InvestmentSourceId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("IncomeManager.Models.InvestmentSource", "Source")
+                        .WithMany()
+                        .HasForeignKey("SourceId");
+
                     b.HasOne("IncomeManager.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Source");
                 });
 
             modelBuilder.Entity("IncomeManager.Models.Salary", b =>
@@ -228,23 +251,13 @@ namespace IncomeManager.Migrations
                     b.HasOne("IncomeManager.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("InvestmentInvestmentSource", b =>
+            modelBuilder.Entity("IncomeManager.Models.InvestmentSource", b =>
                 {
-                    b.HasOne("IncomeManager.Models.Investment", null)
-                        .WithMany()
-                        .HasForeignKey("InvestmentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IncomeManager.Models.InvestmentSource", null)
-                        .WithMany()
-                        .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Investments");
                 });
 #pragma warning restore 612, 618
         }

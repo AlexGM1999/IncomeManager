@@ -30,9 +30,14 @@ namespace IncomeManager.Services
             return income;
         }
 
-        public async Task<Income> PutIncome(int id, Income income)
+        public async Task<Income> PutIncome(Income income)
         {
-            _context.Entry(income).State = EntityState.Modified;
+            var i = await _context.Income.FindAsync(income.Id).ConfigureAwait(false);
+            i.InvestmentId = income.InvestmentId;
+            i.UserId = income.UserId;
+            i.Date = income.Date;
+            i.Amount = income.Amount;
+
             await _context.SaveChangesAsync();
 
             return income;
@@ -41,7 +46,7 @@ namespace IncomeManager.Services
         public async Task<Income> PostIncome(Income income)
         {
             var user = await _context.Users.FindAsync(income.UserId);
-            user.Ballance += income.Amount;
+            user.PersonalBalance += income.Amount;
 
             _context.Income.Add(income);
             await _context.SaveChangesAsync();

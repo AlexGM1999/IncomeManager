@@ -6,7 +6,7 @@ namespace IncomeManager.Models
     {
         public int Id { get; set; }
         public decimal Amount { get; set; }
-        public DateTime DateTime { get; set; }
+        public string Date { get; set; } = DateTime.Now.ToShortDateString();
         public int UserId { get; set; }
     }
 }
