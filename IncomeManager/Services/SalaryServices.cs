@@ -41,7 +41,7 @@ namespace IncomeManager.Services
 
             s.Amount = salary.Amount;
             s.UserId = salary.UserId;
-            s.Date = salary.Date;
+            s.DateTime = salary.DateTime;
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
 

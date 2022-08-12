@@ -35,10 +35,11 @@ namespace IncomeManager.Services
         {
             var e = await _context.Expenses.FindAsync(expense.Id).ConfigureAwait(false);
             var user = await _context.Users.FindAsync(expense.UserId).ConfigureAwait(false);
+
             user.PersonalBalance += e.Amount;
             user.PersonalBalance -= expense.Amount;
 
-            e.InvestmentId = expense.InvestmentId;
+            e.Investment = expense.Investment;
             e.UserId = expense.UserId;
             e.Amount = expense.Amount;
             e.Type = expense.Type;
@@ -49,7 +50,7 @@ namespace IncomeManager.Services
         }
 
         public async Task<Expense> PostExpense(Expense expense)
-        {        
+        {
             var user = await _context.Users.FindAsync(expense.UserId);
             user.PersonalBalance -= expense.Amount;
 

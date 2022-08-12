@@ -4,17 +4,17 @@ namespace IncomeManager.DTOs
 {
     public class CreateInvestment
     {
-        public CreateInvestment(decimal balance, InvestmentSource source, int userId, DateTime dateTime)
+        public CreateInvestment(decimal balance, int sourceId, int userId, DateTime dateTime)
         {
             Balance = balance;
-            Source = source;
+            SourceId = sourceId;
             UserId = userId;
             DateTime = dateTime;
         }
 
         public decimal Balance { get; set; }
 
-        public InvestmentSource Source { get; set; }
+        public int SourceId { get; set; }
 
         public int UserId { get; set; }
 

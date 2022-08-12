@@ -28,9 +28,9 @@
                                     </q-card-section>
 
                                     <q-card-section class="q-pt-none">
-                                        <q-input color="white" rounded outlined v-model="type" label="Type" />
+                                        <q-select color="white" rounded outlined v-model="type" :options="options" label="Type" />
                                         <q-input color="white" rounded outlined v-model="amount" label="Amount" />
-                                        <q-input color="white" rounded outlined v-model="investment" label="Investment" />
+                                        <q-select color="white" rounded outlined v-model="investment" :options="optionsInv" label="Type" />
                                     </q-card-section>
 
                                     <q-card-actions align="right" class="bg-white text-teal">
@@ -77,9 +77,9 @@
 
                                     <q-card-section>
                                         <div class="row">
-                                            <q-input v-model="editedItem.Type" label="Type"></q-input>
+                                            <q-select v-model="editedItem.Type" :options="options" label="Type" />
                                             <q-input v-model="editedItem.Amount" label="Amount"></q-input>
-                                            <q-input v-model="editedItem.Investment" label="Investment"></q-input>
+                                            <q-select v-model="editedItem.Investment" :options="optionsInv" label="Investment" />
                                         </div>
                                     </q-card-section>
 
@@ -113,12 +113,20 @@
         setup() {
             return {
                 persistent: ref(false),
-                type: ref(''),
                 amount: ref(''),
-                investment: ref(''),
+
                 ph: ref(''),
                 dense: ref(false),
                 tab: ref('main'),
+
+                type: ref(''),
+                options: [
+                    'Groceries', 'Car', 'Rent', 'Health', 'Insurance', 'Transportation', 'Housing', 'Education', 'Other'
+                ],
+                investment: ref(''),
+                optionsInv: [
+                    'Personal', 'Bank', 'Investors', 'Other'
+                ]
             }
         },
         name: 'Expenses-component',
@@ -192,7 +200,7 @@
 
             },
             addExpense() {
-                this.$http.post('http://localhost:55131/api/Expenses', { type: this.type, amount: this.amount, investment: null, userId: 1 })
+                this.$http.post('http://localhost:55131/api/Expenses', { type: this.type, amount: this.amount, investment: this.investment, userId: 1 })
                     .then(response => {
                         console.log(response.data)
                         this.rows.push(response.data)

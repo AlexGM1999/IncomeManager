@@ -33,9 +33,9 @@ namespace IncomeManager.Services
         public async Task<Income> PutIncome(Income income)
         {
             var i = await _context.Income.FindAsync(income.Id).ConfigureAwait(false);
-            i.InvestmentId = income.InvestmentId;
+            i.Investment = income.Investment;
             i.UserId = income.UserId;
-            i.Date = income.Date;
+            i.DateTime = income.DateTime;
             i.Amount = income.Amount;
 
             await _context.SaveChangesAsync();

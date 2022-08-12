@@ -36,10 +36,9 @@ namespace IncomeManager.Services
         public async Task<Investment> PutInvestment(Investment investment)
         {
             var inv = await _context.Investments.FindAsync(investment.Id).ConfigureAwait(false);
-            inv.Balance = investment.Balance;
             inv.UserId = investment.UserId;
             inv.DateTime = investment.DateTime;
-            inv.Source = investment.Source;
+            inv.SourceId = investment.SourceId;
             await _context.SaveChangesAsync();
 
             return investment;
@@ -48,8 +47,7 @@ namespace IncomeManager.Services
         public async Task<Investment> PostInvestment(CreateInvestment investment)
         {
             var inv = new Investment();
-            inv.Balance = investment.Balance;
-            inv.Source = investment.Source;
+            inv.SourceId = investment.SourceId;
             inv.DateTime = investment.DateTime;
             inv.UserId = investment.UserId;
 

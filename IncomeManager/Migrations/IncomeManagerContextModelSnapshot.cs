@@ -33,27 +33,21 @@ namespace IncomeManager.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("Date")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("InvestmentId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Scheduled")
-                        .HasColumnType("bit");
+                    b.Property<string>("Investment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InvestmentId");
 
                     b.HasIndex("UserId");
 
@@ -71,22 +65,21 @@ namespace IncomeManager.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Date")
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Investment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("InvestmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InvestmentId");
 
                     b.HasIndex("UserId");
 
@@ -101,16 +94,10 @@ namespace IncomeManager.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("InvestmentSourceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SourceId")
+                    b.Property<int>("SourceId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -118,30 +105,9 @@ namespace IncomeManager.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InvestmentSourceId");
-
-                    b.HasIndex("SourceId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Investments");
-                });
-
-            modelBuilder.Entity("IncomeManager.Models.InvestmentSource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("InvestmentSources");
                 });
 
             modelBuilder.Entity("IncomeManager.Models.Salary", b =>
@@ -155,9 +121,8 @@ namespace IncomeManager.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -200,11 +165,6 @@ namespace IncomeManager.Migrations
 
             modelBuilder.Entity("IncomeManager.Models.Expense", b =>
                 {
-                    b.HasOne("IncomeManager.Models.Investment", null)
-                        .WithMany()
-                        .HasForeignKey("InvestmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("IncomeManager.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -214,11 +174,6 @@ namespace IncomeManager.Migrations
 
             modelBuilder.Entity("IncomeManager.Models.Income", b =>
                 {
-                    b.HasOne("IncomeManager.Models.Investment", null)
-                        .WithMany()
-                        .HasForeignKey("InvestmentId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("IncomeManager.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -228,22 +183,11 @@ namespace IncomeManager.Migrations
 
             modelBuilder.Entity("IncomeManager.Models.Investment", b =>
                 {
-                    b.HasOne("IncomeManager.Models.InvestmentSource", null)
-                        .WithMany("Investments")
-                        .HasForeignKey("InvestmentSourceId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("IncomeManager.Models.InvestmentSource", "Source")
-                        .WithMany()
-                        .HasForeignKey("SourceId");
-
                     b.HasOne("IncomeManager.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Source");
                 });
 
             modelBuilder.Entity("IncomeManager.Models.Salary", b =>
@@ -253,11 +197,6 @@ namespace IncomeManager.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("IncomeManager.Models.InvestmentSource", b =>
-                {
-                    b.Navigation("Investments");
                 });
 #pragma warning restore 612, 618
         }
