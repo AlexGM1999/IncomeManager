@@ -16,6 +16,7 @@ builder.Services.AddScoped<ISalaryServices, SalaryServices>();
 builder.Services.AddScoped<IExpensesServices, ExpensesServices>();
 builder.Services.AddScoped<IIncomeServices, IncomeServices>();
 builder.Services.AddScoped<IInvestmentServices, InvestmentServices>();
+builder.Services.AddScoped<IUserSevices, UserSevices>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

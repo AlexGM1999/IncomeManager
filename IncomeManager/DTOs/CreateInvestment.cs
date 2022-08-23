@@ -1,23 +1,18 @@
-﻿using IncomeManager.Models;
-
-namespace IncomeManager.DTOs
+﻿namespace IncomeManager.DTOs
 {
     public class CreateInvestment
     {
-        public CreateInvestment(decimal balance, int sourceId, int userId, DateTime dateTime)
+        public CreateInvestment(decimal amount, string source, int userId)
         {
-            Balance = balance;
-            SourceId = sourceId;
+            Amount = amount;
+            Source = source;
             UserId = userId;
-            DateTime = dateTime;
         }
 
-        public decimal Balance { get; set; }
+        public decimal Amount { get; set; }
 
-        public int SourceId { get; set; }
+        public string Source { get; set; }
 
         public int UserId { get; set; }
-
-        public DateTime DateTime { get; set; } = DateTime.Now;
     }
 }

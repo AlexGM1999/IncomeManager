@@ -47,7 +47,6 @@ namespace IncomeManager.Controllers
         }
 
         // PUT: api/Investment/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<ActionResult<Investment>> PutInvestment(Investment investment)
         {
@@ -69,12 +68,10 @@ namespace IncomeManager.Controllers
         }
 
         // POST: api/Investment
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task/*Task<ActionResult>*/ PostInvestment(CreateInvestment investment)
+        public async Task<Investment> PostInvestment(CreateInvestment investment)
         {
-            await _investmentServices.PostInvestment(investment).ConfigureAwait(false);
-            //return CreatedAtAction("GetInvestment", new { id = investment.Id }, investment);
+            return await _investmentServices.PostInvestment(investment).ConfigureAwait(false);
         }
 
         // DELETE: api/Investment/5

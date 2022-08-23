@@ -1,5 +1,6 @@
 ﻿using IncomeManager.Data;
 using IncomeManager.Models;
+using IncomeManager.Constants;
 using System.Data.Entity.Core;
 using Microsoft.EntityFrameworkCore;
 using IncomeManager.DTOs;
@@ -36,9 +37,44 @@ namespace IncomeManager.Services
         public async Task<Investment> PutInvestment(Investment investment)
         {
             var inv = await _context.Investments.FindAsync(investment.Id).ConfigureAwait(false);
+            var user = await _context.Users.FindAsync(investment.UserId).ConfigureAwait(false);
+
+            switch (inv.Source)
+            {
+                case Sources.Personal:
+                    user.PersonalBalance -= inv.Amount;
+                    break;
+                case Sources.Investors:
+                    user.InvestorsBalance -= inv.Amount;
+                    break;
+                case Sources.Bank:
+                    user.BankBalance -= inv.Amount;
+                    break;
+                case Sources.Other:
+                    user.OtherBalance -= inv.Amount;
+                    break;
+            }
+            switch (investment.Source)
+            {
+                case Sources.Personal:
+                    user.PersonalBalance += investment.Amount;
+                    break;
+                case Sources.Investors:
+                    user.InvestorsBalance += investment.Amount;
+                    break;
+                case Sources.Bank:
+                    user.BankBalance += investment.Amount;
+                    break;
+                case Sources.Other:
+                    user.OtherBalance += investment.Amount;
+                    break;
+            }
+
             inv.UserId = investment.UserId;
-            inv.DateTime = investment.DateTime;
-            inv.SourceId = investment.SourceId;
+            inv.DateTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+            inv.Source = investment.Source;
+            inv.Amount = investment.Amount;
+
             await _context.SaveChangesAsync();
 
             return investment;
@@ -46,11 +82,29 @@ namespace IncomeManager.Services
 
         public async Task<Investment> PostInvestment(CreateInvestment investment)
         {
-            var inv = new Investment();
-            inv.SourceId = investment.SourceId;
-            inv.DateTime = investment.DateTime;
-            inv.UserId = investment.UserId;
+            var user = await _context.Users.FindAsync(investment.UserId).ConfigureAwait(false);
 
+            var inv = new Investment();
+            inv.Source= investment.Source;
+            inv.DateTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm"); ;
+            inv.UserId = investment.UserId;
+            inv.Amount = investment.Amount;
+
+            switch (investment.Source)
+            {
+                case Sources.Personal:
+                    user.PersonalBalance += investment.Amount;
+                    break;
+                case Sources.Investors:
+                    user.InvestorsBalance += investment.Amount;
+                    break;
+                case Sources.Bank:
+                    user.BankBalance += investment.Amount;
+                    break;
+                case Sources.Other:
+                    user.OtherBalance += investment.Amount;
+                    break;
+            }
             _context.Investments.Add(inv);
             await _context.SaveChangesAsync();
 
@@ -60,9 +114,25 @@ namespace IncomeManager.Services
         public async Task DeleteInvestment(int id)
         {
             var investment = await _context.Investments.FindAsync(id);
+            var user = await _context.Users.FindAsync(investment.UserId).ConfigureAwait(false);
             if (investment == null)
             {
                 throw new ObjectNotFoundException();
+            }
+            switch (investment.Source)
+            {
+                case Sources.Personal:
+                    user.PersonalBalance -= investment.Amount;
+                    break;
+                case Sources.Investors:
+                    user.InvestorsBalance -= investment.Amount;
+                    break;
+                case Sources.Bank:
+                    user.BankBalance -= investment.Amount;
+                    break;
+                case Sources.Other:
+                    user.OtherBalance -= investment.Amount;
+                    break;
             }
 
             _context.Investments.Remove(investment);

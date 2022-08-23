@@ -12,7 +12,6 @@
                         narrow-indicator>
                     <q-tab name="main" label="Main" />
                     <q-tab name="statistics" label="Statistics" />
-                    <q-tab name="goals" label="Goals" />
                 </q-tabs>
 
                 <q-tab-panels v-model="tab" animated>
@@ -28,9 +27,9 @@
                                     </q-card-section>
 
                                     <q-card-section class="q-pt-none">
-                                        <q-select color="white" rounded outlined v-model="type" :options="options" label="Type" />
-                                        <q-input color="white" rounded outlined v-model="amount" label="Amount" />
-                                        <q-select color="white" rounded outlined v-model="investment" :options="optionsInv" label="Type" />
+                                        <q-select color="white" rounded outlined v-model="type" :options="options" label="Type" :rules="[val => val !== null && val !== '' || 'Please choose the type']"/>
+                                        <q-input color="white" type="number" rounded outlined v-model="amount" label="Amount" :rules="[val => val !== null && val !== '' || 'Please type the amount']" />
+                                        <q-select color="white" rounded outlined v-model="investment" :options="optionsInv" label="Investment" :rules="[val => val !== null && val !== '' || 'Please choose the investment']" />
                                     </q-card-section>
 
                                     <q-card-actions align="right" class="bg-white text-teal">
@@ -77,9 +76,9 @@
 
                                     <q-card-section>
                                         <div class="row">
-                                            <q-select v-model="editedItem.Type" :options="options" label="Type" />
-                                            <q-input v-model="editedItem.Amount" label="Amount"></q-input>
-                                            <q-select v-model="editedItem.Investment" :options="optionsInv" label="Investment" />
+                                            <q-select v-model="editedItem.Type" :options="options" label="Type" :rules="[val => val !== null && val !== '' || 'Please choose the type']" />
+                                            <q-input v-model="editedItem.Amount" type="number" label="Amount" :rules="[val => val !== null && val !== '' || 'Please type the amount']"></q-input>
+                                            <q-select v-model="editedItem.Investment" :options="optionsInv" label="Investment" :rules="[val => val !== null && val !== '' || 'Please choose the investment']"/>
                                         </div>
                                     </q-card-section>
 
@@ -89,17 +88,14 @@
                                 </q-card>
                             </q-dialog>
                         </div>
-
                     </q-tab-panel>
 
                     <q-tab-panel name="statistics">
-                        <div class="text-h6">Alarms</div>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    </q-tab-panel>
-
-                    <q-tab-panel name="goals">
-                        <div class="text-h6">Movies</div>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        <q-btn id="loadBtn" style="width: 100%" @click="getData">Load Stats</q-btn>
+                        <div id="chartsTitle" style="display: none" class="text-h6">Charts</div>
+                        <div style="margin: 0 auto; width:40%">
+                            <canvas id="myChart"></canvas>
+                        </div>
                     </q-tab-panel>
                 </q-tab-panels>
             </q-card>
@@ -109,6 +105,9 @@
 
 <script>
     import { ref } from 'vue'
+    import Chart from 'chart.js/auto';
+    import _ from 'lodash';
+
     export default {
         setup() {
             return {
@@ -155,18 +154,16 @@
                 ],
                 show_dialog: false,
                 editedItem: '',
-            }
+                myChart: '',
+                chartData: [],
+            };
         },
 
         methods: {
             async deleteClick(row) {
                 await this.$http.delete('http://localhost:55131/api/Expenses/' + row.id)
 
-                this.$http.get('http://localhost:55131/api/Expenses')
-                    .then(response => {
-                        console.log(response.data)
-                        this.rows = response.data
-                    })
+                this.getExpenses()
             },
             editClick(item) {
                 this.editedItem = item;
@@ -187,33 +184,69 @@
                         userId: 1
                     }
                 )
-                .then(response => {
-                    console.log(response.data)
-                    this.rows.push(response.data)
-                })
-
-                this.$http.get('http://localhost:55131/api/Expenses')
                     .then(response => {
-                        console.log(response.data)
-                        this.rows = response.data
+                        this.rows.push(response.data)
                     })
 
+                this.getExpenses
+
             },
-            addExpense() {
+             addExpense() {
                 this.$http.post('http://localhost:55131/api/Expenses', { type: this.type, amount: this.amount, investment: this.investment, userId: 1 })
                     .then(response => {
-                        console.log(response.data)
                         this.rows.push(response.data)
+                    })
+                 this.ResetText()
+            },
+            ResetText() {
+                this.type = '',
+                this.amount = '',
+                this.investment = ''
+            },
+            getExpenses() {
+                this.$http.get('http://localhost:55131/api/Expenses')
+                    .then(response => {
+                        this.rows = response.data
+                    });
+            },
+            getData() {
+                this.showStatistics()
+            },
+            showStatistics() {
+                this.chart = null;
+                let chartsTitle = document.getElementById('chartsTitle')
+                chartsTitle.style.display = 'block'
+                let load_btn = document.getElementById('loadBtn')
+                load_btn.style.display = 'none';
+                var canvas = document.getElementById('myChart')
+                let ctx = canvas.getContext('2d')
+                let data = ''
+                this.$http.get('http://localhost:55131/api/Expenses')
+                    .then(response => {
+                        data = _.mapValues(_.groupBy(response.data, 'type'), value => _.sumBy(value, 'amount'))
+                        let backgroundColors = []
+                        for (let i = 0; i < Object.keys(data).length; i++) {
+                            backgroundColors.push(
+                                `rgb(${Math.random() * 256}, ${Math.random() * 256}, ${Math.random() * 256})`
+                            )
+                        }
+                        let dataItem = {
+                            labels: Object.keys(data),
+                            datasets: [{
+                                data: Object.values(data),
+                                backgroundColor: backgroundColors,
+                                hoverOffset: 4
+                            }]
+                        }
+                        this.chart = new Chart(ctx, {
+                            type: 'pie',
+                            data: dataItem,
+                        });
                     })
             }
         },
-
         mounted() {
-            this.$http.get('http://localhost:55131/api/Expenses')
-                .then(response => {
-                    console.log(response.data)
-                    this.rows = response.data
-                })
+            this.getExpenses()
         }
     }
 </script>

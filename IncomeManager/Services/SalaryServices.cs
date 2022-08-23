@@ -41,7 +41,7 @@ namespace IncomeManager.Services
 
             s.Amount = salary.Amount;
             s.UserId = salary.UserId;
-            s.DateTime = salary.DateTime;
+            s.DateTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
@@ -50,6 +50,8 @@ namespace IncomeManager.Services
 
         public async Task<Salary> PostSalary(Salary salary)
         {
+            salary.DateTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+
             var user = await _context.Users.FindAsync(salary.UserId);
             user.PersonalBalance += salary.Amount;
 
@@ -66,6 +68,9 @@ namespace IncomeManager.Services
             {
                 throw new ObjectNotFoundException();
             }
+
+            var user = await _context.Users.FindAsync(salary.UserId);
+            user.PersonalBalance -= salary.Amount;
 
             _context.Salary.Remove(salary);
             await _context.SaveChangesAsync();

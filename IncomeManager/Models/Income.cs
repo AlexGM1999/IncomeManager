@@ -7,7 +7,7 @@ namespace IncomeManager.Models
         public int Id { get; set; } 
         public string Type { get; set; }
         public decimal Amount { get; set; }
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        public string DateTime { get; set; } = "";
         public int UserId { get; set; }
         public string Investment { get; set; }
     }
