@@ -69,7 +69,7 @@ namespace IncomeManager.Controllers
 
         // POST: api/Investment
         [HttpPost]
-        public async Task<Investment> PostInvestment(CreateInvestment investment)
+        public async Task<Investment> PostInvestment(Investment investment)
         {
             return await _investmentServices.PostInvestment(investment).ConfigureAwait(false);
         }

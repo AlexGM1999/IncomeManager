@@ -80,15 +80,11 @@ namespace IncomeManager.Services
             return investment;
         }
 
-        public async Task<Investment> PostInvestment(CreateInvestment investment)
+        public async Task<Investment> PostInvestment(Investment investment)
         {
             var user = await _context.Users.FindAsync(investment.UserId).ConfigureAwait(false);
 
-            var inv = new Investment();
-            inv.Source= investment.Source;
-            inv.DateTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm"); ;
-            inv.UserId = investment.UserId;
-            inv.Amount = investment.Amount;
+            investment.DateTime = DateTime.Now.ToString("dd/MM/yyyy HH:mm"); ;
 
             switch (investment.Source)
             {
@@ -105,10 +101,10 @@ namespace IncomeManager.Services
                     user.OtherBalance += investment.Amount;
                     break;
             }
-            _context.Investments.Add(inv);
+            _context.Investments.Add(investment);
             await _context.SaveChangesAsync();
 
-            return inv;
+            return investment;
         }
 
         public async Task DeleteInvestment(int id)
