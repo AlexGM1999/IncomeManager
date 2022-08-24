@@ -10,7 +10,6 @@ using IncomeManager.Data;
 using IncomeManager.Models;
 using IncomeManager.Services;
 using System.Data.Entity.Core;
-using IncomeManager.DTOs;
 
 namespace IncomeManager.Controllers
 {

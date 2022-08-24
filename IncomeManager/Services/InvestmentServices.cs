@@ -3,7 +3,6 @@ using IncomeManager.Models;
 using IncomeManager.Constants;
 using System.Data.Entity.Core;
 using Microsoft.EntityFrameworkCore;
-using IncomeManager.DTOs;
 
 namespace IncomeManager.Services
 {

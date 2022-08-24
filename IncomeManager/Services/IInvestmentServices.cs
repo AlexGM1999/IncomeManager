@@ -1,5 +1,4 @@
-﻿using IncomeManager.DTOs;
-using IncomeManager.Models;
+﻿using IncomeManager.Models;
 
 namespace IncomeManager.Services
 {
