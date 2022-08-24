@@ -77,7 +77,7 @@
                                     <q-card-section>
                                         <div class="row">
                                             <q-select v-model="editedItem.Type" :options="options" label="Type" :rules="[val => val !== null && val !== '' || 'Please choose the type']" />
-                                            <q-input v-model="editedItem.Amount"  type="number" label="Amount" :rules="[val => val !== null && val !== '' || 'Please type the amount']"></q-input>
+                                            <q-input v-model="editedItem.Amount" type="number" label="Amount" :rules="[val => val !== null && val !== '' || 'Please type the amount']"></q-input>
                                             <q-select v-model="editedItem.Investment" :options="optionsInv" label="Investment" :rules="[val => val !== null && val !== '' || 'Please choose the investment']" />
                                         </div>
                                     </q-card-section>
@@ -87,6 +87,26 @@
                                     </q-card-actions>
                                 </q-card>
                             </q-dialog>
+
+                            <q-dialog v-model="show_dialogDelete">
+                                <q-card>
+                                    <q-card-section>
+                                        <div class="text-h6">Delete Income</div>
+                                    </q-card-section>
+
+                                    <q-card-section>
+                                        <div class="row">
+                                            <p>Are you sure you want to delete the income permanently?</p>
+                                        </div>
+                                    </q-card-section>
+
+                                    <q-card-actions align="right">
+                                        <q-btn flat label="Delete" color="primary" v-close-popup @click="deleteIncome"></q-btn>
+                                        <q-btn flat label="Cancel" color="primary" v-close-popup></q-btn>
+                                    </q-card-actions>
+                                </q-card>
+                            </q-dialog>
+
                         </div>
                     </q-tab-panel>
 
@@ -149,22 +169,21 @@
 
                 ],
 
-                rows: [
-                    {
-                    }
-                ],
+                rows: [{}],
+
                 show_dialog: false,
+                show_dialogDelete: false,
                 editedItem: '',
+                deletedItem: '',
                 myChart: '',
                 chartData: [],
             }
         },
 
         methods: {
-            async deleteClick(row) {
-                await this.$http.delete('http://localhost:55131/api/Income/' + row.id)
-
-                this.getIncome()
+            deleteClick(item) {
+                this.show_dialogDelete = true;
+                this.deletedItem = item;
             },
             editClick(item) {
                 this.editedItem = item;
@@ -172,6 +191,11 @@
                 this.editedItem.Type = item.type;
                 this.editedItem.Amount = item.amount;
                 this.editedItem.Investment = item.investment;
+            },
+            async deleteIncome() {
+                await this.$http.delete('http://localhost:55131/api/Income/' + this.deletedItem.id)
+
+                this.getIncome()
             },
             async updateRow() {
                 await this.$http.put(

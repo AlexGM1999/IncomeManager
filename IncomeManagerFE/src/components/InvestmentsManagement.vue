@@ -83,8 +83,27 @@
                                     </q-card-actions>
                                 </q-card>
                             </q-dialog>
-                        </div>
 
+                            <q-dialog v-model="show_dialogDelete">
+                                <q-card>
+                                    <q-card-section>
+                                        <div class="text-h6">Delete Investment</div>
+                                    </q-card-section>
+
+                                    <q-card-section>
+                                        <div class="row">
+                                            <p>Are you sure you want to delete the investment permanently?</p>
+                                        </div>
+                                    </q-card-section>
+
+                                    <q-card-actions align="right">
+                                        <q-btn flat label="Delete" color="primary" v-close-popup @click="deleteInvestment"></q-btn>
+                                        <q-btn flat label="Cancel" color="primary" v-close-popup></q-btn>
+                                    </q-card-actions>
+                                </q-card>
+                            </q-dialog>
+
+                        </div>
                     </q-tab-panel>
 
                     <q-tab-panel name="statistics">
@@ -145,21 +164,27 @@
                     }
                 ],
                 show_dialog: false,
+                show_dialogDelete:false,
                 editedItem: '',
+                deletedItem:''
             }
         },
 
         methods: {
-            async deleteClick(row) {
-                await this.$http.delete('http://localhost:55131/api/Investments/' + row.id)
-
-                this.getInvestments()
+             deleteClick(item) {
+                this.show_dialogDelete = true;
+                this.deletedItem = item;
             },
             editClick(item) {
                 this.editedItem = item;
                 this.show_dialog = true;
                 this.editedItem.Source = item.source;
                 this.editedItem.Amount = item.amount;
+            },
+            async deleteInvestment() {
+                await this.$http.delete('http://localhost:55131/api/Investments/' + this.deletedItem.id)
+
+                this.getInvestments()
             },
             async updateRow() {
                 await this.$http.put(
@@ -240,4 +265,3 @@
         }
     }
 </script>
->

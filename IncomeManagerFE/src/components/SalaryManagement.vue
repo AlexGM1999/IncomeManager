@@ -75,9 +75,30 @@
 
                                     <q-card-actions align="right">
                                         <q-btn flat label="Update" color="primary" v-close-popup @click="updateRow"></q-btn>
+                                        <q-btn flat label="Cancel" color="primary" v-close-popup></q-btn>
                                     </q-card-actions>
                                 </q-card>
                             </q-dialog>
+
+                            <q-dialog v-model="show_dialogDelete">
+                                <q-card>
+                                    <q-card-section>
+                                        <div class="text-h6">Delete Salary</div>
+                                    </q-card-section>
+
+                                    <q-card-section>
+                                        <div class="row">
+                                            <p>Are you sure you want to delete the salary permanently?</p>
+                                        </div>
+                                    </q-card-section>
+
+                                    <q-card-actions align="right">
+                                        <q-btn flat label="Delete" color="primary" v-close-popup @click="deleteSalary(row)"></q-btn>
+                                        <q-btn flat label="Cancel" color="primary" v-close-popup></q-btn>
+                                    </q-card-actions>
+                                </q-card>
+                            </q-dialog>
+
                         </div>
                     </q-tab-panel>
 
@@ -125,21 +146,27 @@
                     }
                 ],
                 show_dialog: false,
+                show_dialogDelete: false,
                 editedItem: '',
+                deletedItem: ''
             }
         },
 
         methods: {
-            async deleteClick(row) {
-                await this.$http.delete('http://localhost:55131/api/Salary/' + row.id)
-
-                this.getSalary()
+            deleteClick(item) {
+                this.show_dialogDelete = true;
+                this.deletedItem = item;
             },
             editClick(item) {
                 this.editedItem = item;
                 this.show_dialog = true;
                 this.editedItem.Type = item.type;
                 this.editedItem.Amount = item.amount;
+            },
+            async deleteSalary() {
+                await this.$http.delete('http://localhost:55131/api/Salary/' + this.deletedItem.id)
+
+                this.getSalary()
             },
             async updateRow() {
                 await this.$http.put(
@@ -185,7 +212,7 @@
                     .then(response => {
                         data = _.mapValues(_.groupBy(response.data, 'dateTime'), value => _.sumBy(value, 'amount'))
                         let dataItem = {
-                            labels: Object.keys(data).slice(1, 11),
+                            labels: Object.keys(data),
                             datasets: [{
                                 label: 'Salary',
                                 data: Object.values(data),

@@ -58,12 +58,10 @@ export default {
         getFunds() {
             this.$http.get('http://localhost:55131/api/Users')
                 .then(response => {
-                    console.log(response.data)
                     this.personal = `Personal Balance: ${response.data[0].personalBalance}`,
                     this.bank = `Bank Balance: ${response.data[0].bankBalance}`,
                     this.investors = `Investors Balance: ${response.data[0].investorsBalance}`
                     this.other = `Other Balance: ${response.data[0].otherBalance}`
-
                 })
         }
         }
