@@ -40,7 +40,6 @@ namespace IncomeManager.Controllers
         }
 
         // PUT: api/Income/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<ActionResult<Income>> PutIncome(Income income)
         {
@@ -62,7 +61,6 @@ namespace IncomeManager.Controllers
         }
 
         // POST: api/Income
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Income>> PostIncome(Income income)
         {
