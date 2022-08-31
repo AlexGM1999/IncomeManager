@@ -1,18 +1,9 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using IncomeManager.Data;
 using IncomeManager.Models;
 using IncomeManager.Services;
 using System.Data.Entity.Core;
-using Quartz.Impl;
-using Quartz;
-using System.Collections.Specialized;
 
 namespace IncomeManager.Controllers
 {

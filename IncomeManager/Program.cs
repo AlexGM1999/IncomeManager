@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using IncomeManager.Data;
 using IncomeManager.Services;
-using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -6,23 +6,23 @@
             <q-btn flat round dense label="Investments" icon="timeline" @click="gotoInvestments()" />
             <q-btn flat round dense label="Income" icon="euro" @click="gotoIncome()" />
             <q-btn flat round dense label="Expenses" icon="shopping_cart_checkout" @click="gotoExpenses()" />
-           
-            <q-space/>
 
-                <q-fab v-model="fab2"
-                       label="Funds"
-                       vertical-actions-align="right"
-                       color="secondary"
-                       icon="keyboard_arrow_down"
-                       direction="down"
-                       @click="getFunds">
-                    <q-fab-action color="primary"  :label=personal />
-                    <q-fab-action color="secondary" :label="bank" />
-                    <q-fab-action color="orange" :label="investors" />
-                    <q-fab-action color="accent"  :label="other" />
-                </q-fab>
+            <q-space />
 
+            <q-fab v-model="fab2"
+                   label="Funds"
+                   vertical-actions-align="right"
+                   color="secondary"
+                   icon="keyboard_arrow_down"
+                   direction="down"
+                   @click="getFunds">
+                <q-fab-action color="primary" :label=personal />
+                <q-fab-action color="secondary" :label="bank" />
+                <q-fab-action color="orange" :label="investors" />
+                <q-fab-action color="accent" :label="other" />
+            </q-fab>
         </q-toolbar>
+
         <router-view />
     </div>
 </template>
