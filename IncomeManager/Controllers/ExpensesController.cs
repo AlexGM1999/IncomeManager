@@ -21,11 +21,12 @@ namespace IncomeManager.Controllers
 
         // GET: api/Expenses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Expense>>> GetExpense()
+        public async Task<ActionResult<IEnumerable<Expense>>> GetExpenses()
         {
             return new ActionResult<IEnumerable<Expense>>(await _expensesServices.GetExpenses().ConfigureAwait(false));
         }
 
+        // GET: api/Expenses/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Expense>> GetExpense(int id)
         {
@@ -39,7 +40,7 @@ namespace IncomeManager.Controllers
             }      
         }
 
-        // PUT: api/Expenses/5
+        // PUT: api/Expenses/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<Expense>> PutExpense(Expense expence)
         {
@@ -64,11 +65,16 @@ namespace IncomeManager.Controllers
         [HttpPost]
         public async Task<ActionResult> PostExpense(Expense expense)
         {
+            if (expense == null)
+            {
+                return BadRequest();
+            }
+
             await _expensesServices.PostExpense(expense);
-            return CreatedAtAction("GetExpense", new { id = expense.Id }, expense);
+            return CreatedAtAction("PostExpense", new { id = expense.Id }, expense);
         }
 
-        // DELETE: api/Expenses/5
+        // DELETE: api/Expenses/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteExpense(int id)
         {

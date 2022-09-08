@@ -23,7 +23,7 @@ namespace IncomeManager.Controllers
             return new ActionResult<IEnumerable<User>>(await _userServices.GetUsers().ConfigureAwait(false));
         }
 
-        // GET: api/Users/5
+        // GET: api/Users/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetSalary(int id)
         {

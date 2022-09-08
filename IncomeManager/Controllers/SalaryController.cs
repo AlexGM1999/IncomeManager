@@ -25,7 +25,7 @@ namespace IncomeManager.Controllers
             return new ActionResult<IEnumerable<Salary>>(await _salaryServices.GetSalary().ConfigureAwait(false));
         }
 
-        // GET: api/Salary/5
+        // GET: api/Salary/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Salary>> GetSalary(int id)
         {
@@ -39,7 +39,7 @@ namespace IncomeManager.Controllers
             }
         }
 
-        // PUT: api/Salary/5
+        // PUT: api/Salary/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<Salary>> PutSalary(Salary salary)
         {
@@ -64,11 +64,15 @@ namespace IncomeManager.Controllers
         [HttpPost]
         public async Task<ActionResult> PostSalary(Salary salary)
         {
+            if (salary == null)
+            {
+                return BadRequest();
+            }
             await _salaryServices.PostSalary(salary).ConfigureAwait(false);
-            return CreatedAtAction("GetSalary", new { id = salary.Id }, salary);
+            return CreatedAtAction("PostSalary", new { id = salary.Id }, salary);
         }
 
-        // DELETE: api/Salary/5
+        // DELETE: api/Salary/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSalary(int id)
         {

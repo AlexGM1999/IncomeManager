@@ -25,7 +25,7 @@ namespace IncomeManager.Controllers
             return new ActionResult<IEnumerable<Income>>(await _incomeServices.GetIncome().ConfigureAwait(false));
         }
 
-        // GET: api/Income/5
+        // GET: api/Income/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Income>> GetIncome(int id)
         {
@@ -39,7 +39,7 @@ namespace IncomeManager.Controllers
             }
         }
 
-        // PUT: api/Income/5
+        // PUT: api/Income/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<Income>> PutIncome(Income income)
         {
@@ -64,11 +64,16 @@ namespace IncomeManager.Controllers
         [HttpPost]
         public async Task<ActionResult<Income>> PostIncome(Income income)
         {
+            if (income == null)
+            {
+                return BadRequest();
+            }
+
             await _incomeServices.PostIncome(income);
-            return CreatedAtAction("GetIncome", new { id = income.Id }, income);
+            return CreatedAtAction("PostIncome", new { id = income.Id }, income);
         }
 
-        // DELETE: api/Income/5
+        // DELETE: api/Income/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteIncome(int id)
         {

@@ -1,12 +1,6 @@
 ﻿#nullable disable
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using IncomeManager.Data;
 using IncomeManager.Models;
 using IncomeManager.Services;
 using System.Data.Entity.Core;
@@ -31,7 +25,7 @@ namespace IncomeManager.Controllers
             return new ActionResult<IEnumerable<Investment>>(await _investmentServices.GetInvestments().ConfigureAwait(false));
         }
 
-        // GET: api/Investment/5
+        // GET: api/Investment/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Investment>> GetInvestment(int id)
         {
@@ -45,7 +39,7 @@ namespace IncomeManager.Controllers
             }
         }
 
-        // PUT: api/Investment/5
+        // PUT: api/Investment/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<Investment>> PutInvestment(Investment investment)
         {
@@ -68,12 +62,18 @@ namespace IncomeManager.Controllers
 
         // POST: api/Investment
         [HttpPost]
-        public async Task<Investment> PostInvestment(Investment investment)
+        public async Task<ActionResult<Investment>> PostInvestment(Investment investment)
         {
-            return await _investmentServices.PostInvestment(investment).ConfigureAwait(false);
+            if (investment == null)
+            {
+                return BadRequest();
+            }
+
+            await _investmentServices.PostInvestment(investment).ConfigureAwait(false);
+            return CreatedAtAction("PostInvestment", new { id = investment.Id }, investment);
         }
 
-        // DELETE: api/Investment/5
+        // DELETE: api/Investment/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSalary(int id)
         {
